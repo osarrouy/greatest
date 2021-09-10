@@ -40,7 +40,7 @@ contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
     }
 
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://QmUq5anWNehvnDoeLuJjLebhwjko1TcSjwLsF75eCtWoPh/";
+        return "ipfs://QmYDHV4rvWmcNAy5k22LiyL9n2c6Jheu7RKVCmSQiaZdFT/";
     }
 
     function _preMint() private {
@@ -50,7 +50,7 @@ contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
             _mint(david, tokenId);
         }
 
-        for (tokenId = 300; tokenId < 320; tokenId++) {
+        for (tokenId = 300; tokenId < 330; tokenId++) {
             _mint(david, tokenId);
         }
 

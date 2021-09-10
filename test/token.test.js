@@ -30,12 +30,12 @@ describe.only("Token", () => {
       expect(await this.token.symbol()).to.equal(this.symbol);
     });
 
-    it("it pre-mints tokens [0 - 69] and [300 - 319] to David", async () => {
+    it("it pre-mints tokens [0 - 69] and [300 - 329] to David", async () => {
       for (let i = 0; i < 70; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.david);
       }
 
-      for (let i = 300; i < 320; i++) {
+      for (let i = 300; i < 330; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.david);
       }
     });
