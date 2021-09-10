@@ -1,5 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
 require("hardhat-gas-reporter");
+require("@nomiclabs/hardhat-etherscan");
 
 module.exports = {
   solidity: {
@@ -22,5 +23,8 @@ module.exports = {
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS ? true : false,
+  },
+  etherscan: {
+    apiKey: "ZXW2Y7U3665YIGZZZUEFK3B59NWIK6X3DR",
   },
 };

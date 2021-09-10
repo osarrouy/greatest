@@ -1,0 +1,60 @@
+{
+  "attributes": [
+    {
+      "trait_type": "Rank",
+      "value": "002"
+    },
+    {
+      "trait_type": "Artist",
+      "value": "The Rolling Stones"
+    },
+    {
+      "trait_type": "Title",
+      "value": "(I Can't Get No) Satisfaction"
+    },
+    {
+      "trait_type": "Album",
+      "value": "Out Of Our Heads"
+    },
+    {
+      "trait_type": "Year",
+      "value": "1965"
+    },
+    {
+      "trait_type": "Duration",
+      "value": "03:43"
+    },
+    {
+      "trait_type": "Background segments",
+      "value": "5"
+    },
+    {
+      "trait_type": "Background frequency",
+      "value": "7"
+    },
+    {
+      "trait_type": "Background color",
+      "value": "Grey"
+    },
+    {
+      "trait_type": "Background aspect",
+      "value": "Glossy"
+    },
+    {
+      "trait_type": "Text color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Radial main color",
+      "value": "Black"
+    },
+    {
+      "trait_type": "Radial sampling",
+      "value": "Twice per second"
+    }
+  ],
+  "image": "ipfs://QmYbhKit1Fuhr8jiPCrPyYWxG3XHw2BUdycMupbzx22qfw/2.png",
+  "image_url": "ipfs://QmYbhKit1Fuhr8jiPCrPyYWxG3XHw2BUdycMupbzx22qfw/2.png",
+  "name": "500 Greatest Songs Of All Time Vizualized : Rank 1",
+  "description": "RANK : 2\n\nArtist : The Rolling Stones\nTitle : (I Can't Get No) Satisfaction\nAlbum : Out Of Our Heads\nYear : 1965\nDuration : 03:43\n\n\nDisclaimer : This artwork is a tribute to the song and artist.\nThe graphical representation is a fair use of modified audio data of the song, sampled every 0.5 second."
+}

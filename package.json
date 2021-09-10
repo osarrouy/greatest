@@ -2,17 +2,21 @@
   "name": "500greatest",
   "version": "1.0.0",
   "scripts": {
+    "lint": "npx prettier --write contracts/",
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
-    "test:gas": "REPORT_GAS=true npx hardhat test"
+    "test:gas": "REPORT_GAS=true npx hardhat test",
+    "deploy": "npx hardhat run --network frame scripts/deploy.js"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.3.1"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.6",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "chai": "^4.3.4",
+    "chalk": "^4.1.2",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.6",
     "hardhat": "^2.6.4",
