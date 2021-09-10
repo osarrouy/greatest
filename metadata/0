@@ -1,0 +1,56 @@
+{
+  "attributes": [
+    {
+      "trait_type": "1 : Rank",
+      "value": "001"
+    },
+    {
+      "trait_type": "2 : Artist",
+      "value": "Bob Dylan"
+    },
+    {
+      "trait_type": "3 : Title",
+      "value": "Like a Rolling Stone"
+    },
+    {
+      "trait_type": "4 : Album",
+      "value": "Highway 61 Revisited"
+    },
+    {
+      "trait_type": "5 : Year",
+      "value": "1965"
+    },
+    {
+      "trait_type": "6 : Duration",
+      "value": "06:10"
+    },
+    {
+      "trait_type": "7 : Radial color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "8 : Text color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "9 : Background color",
+      "value": "White"
+    },
+    {
+      "trait_type": "10 : Background aspect",
+      "value": "Glossy"
+    },
+    {
+      "trait_type": "11 : Background segments",
+      "value": "5"
+    },
+    {
+      "trait_type": "12 : Background frequency",
+      "value": "6"
+    }
+  ],
+  "image": "ipfs://Qmdcsbys1mAF8XGeNGkk7szQaaSVCDtqTjKBmQTynipqPM/1.png",
+  "image_url": "ipfs://Qmdcsbys1mAF8XGeNGkk7szQaaSVCDtqTjKBmQTynipqPM/1.png",
+  "name": "500 Greatest Songs Of All Time Tribute : Rank 0",
+  "description": "RANK : 1\n\nArtist : Bob Dylan\nTitle : Like a Rolling Stone\nAlbum : Highway 61 Revisited\nYear : 1965\nDuration : 06:10\n\n\nDisclaimer : This artwork is a tribute to the songs and artists of this list.\nThe visual representation is a fair use of the song, the audio data have been altered, then sampled every 0.5 second."
+}

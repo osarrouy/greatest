@@ -6,19 +6,31 @@ const PROXY_REGISTRY = {
 };
 
 async function main() {
-  const Greatest = await ethers.getContractFactory("GHAT");
+  const GSAT = await ethers.getContractFactory("GSAT");
+  const GSATFactory = await ethers.getContractFactory("GSATFactory");
 
-  const greatest = await Greatest.deploy(PROXY_REGISTRY.rinkeby);
-  await greatest.deployed();
+  const token = await GSAT.deploy();
+  await token.deployed();
 
-  console.log(`NFT deployed at ${chalk.cyan(greatest.address)}`);
+  const factory = await GSATFactory.deploy(token.address, PROXY_REGISTRY.rinkeby);
+  await factory.deployed();
+
+  console.log(`Token deployed at ${chalk.cyan(token.address)}`);
+  console.log(`Factory deployed at ${chalk.cyan(factory.address)}`);
+
+  const tx0 = await token.mint("0x8873b045d40A458e46E356a96279aE1820a898bA", 0);
+  await tx0.wait();
+  const tx = await token.transferOwnership(factory.address);
+  await tx.wait();
+
+  console.log("Ownership transferred");
 
   // mint once
-  const tx1 = await greatest.mint();
-  await tx1.wait();
-  // mint twice
-  const tx2 = await greatest.mint();
-  await tx2.wait();
+  // const tx1 = await greatest.mint();
+  // await tx1.wait();
+  // // mint twice
+  // const tx2 = await greatest.mint();
+  // await tx2.wait();
 }
 
 main()
