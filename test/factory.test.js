@@ -11,12 +11,12 @@ describe("Factory", () => {
       this.name = "500GreatestSongs";
       this.symbol = "GSAT";
       this.one = ethers.BigNumber.from("1");
+      this.cap = ethers.BigNumber.from("500");
       [this.owner, this.proxy, this.recipient, this.other] = await ethers.getSigners();
       // deploy token
       const Token = await ethers.getContractFactory("GSAT");
       this.token = await Token.deploy();
       await this.token.deployed();
-      this.cap = await this.token.cap();
       // deploy registry
       const Registry = await ethers.getContractFactory("ProxyRegistry");
       this.registry = await Registry.deploy(this.proxy.address);

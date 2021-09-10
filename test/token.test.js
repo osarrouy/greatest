@@ -1,19 +1,20 @@
 const { expect } = require("chai");
 
-const creator = "0x8873b045d40A458e46E356a96279aE1820a898bA";
-
-describe("Token", () => {
+describe.only("Token", () => {
   before(async () => {
     // set test data
     this.name = "500GreatestSongs";
     this.symbol = "GSAT";
     this.one = ethers.BigNumber.from("1");
+    this.cap = ethers.BigNumber.from("500");
     [this.owner, this.recipient, this.other] = await ethers.getSigners();
     // deploy token
     const Token = await ethers.getContractFactory("GSAT");
     this.token = await Token.deploy();
     await this.token.deployed();
-    this.cap = await this.token.cap();
+    this.david = await this.token.david();
+    this.olivier = await this.token.olivier();
+    this.alex = await this.token.alex();
   });
 
   describe("# constructor", () => {
@@ -28,24 +29,54 @@ describe("Token", () => {
     it("it sets contract symbol", async () => {
       expect(await this.token.symbol()).to.equal(this.symbol);
     });
+
+    it("it pre-mints tokens [0 - 69] and [300 - 319] to David", async () => {
+      for (let i = 0; i < 70; i++) {
+        expect(await this.token.ownerOf(i)).to.equal(this.david);
+      }
+
+      for (let i = 300; i < 320; i++) {
+        expect(await this.token.ownerOf(i)).to.equal(this.david);
+      }
+    });
+
+    it("it pre-mints tokens [70 - 79], [100 - 109], [150 - 159] and [200 - 219] to Olivier", async () => {
+      for (let i = 70; i < 80; i++) {
+        expect(await this.token.ownerOf(i)).to.equal(this.olivier);
+      }
+
+      for (let i = 100; i < 110; i++) {
+        expect(await this.token.ownerOf(i)).to.equal(this.olivier);
+      }
+
+      for (let i = 150; i < 160; i++) {
+        expect(await this.token.ownerOf(i)).to.equal(this.olivier);
+      }
+
+      for (let i = 200; i < 220; i++) {
+        expect(await this.token.ownerOf(i)).to.equal(this.olivier);
+      }
+    });
+
+    it("it pre-mints tokens [115 - 119] to Alex", async () => {
+      for (let i = 115; i < 120; i++) {
+        expect(await this.token.ownerOf(i)).to.equal(this.alex);
+      }
+    });
   });
 
   describe("# canMint", () => {
     describe("» token id is within the cap range", () => {
       describe("» and token has not been minted yet", () => {
         it("it returns true", async () => {
-          expect(await this.token.canMint(0)).to.equal(true);
-          expect(await this.token.canMint(this.cap.sub(this.one))).to.equal(true);
+          expect(await this.token.canMint(80)).to.equal(true);
+          expect(await this.token.canMint(499)).to.equal(true);
         });
       });
 
       describe("» but token has already been minted", () => {
-        before(async () => {
-          this.tx = await this.token.connect(this.owner).mint(this.recipient.address, 0);
-          this.receipt = this.tx.wait();
-        });
-
         it("it returns false", async () => {
+          // already minted through the pre-mint
           expect(await this.token.canMint(0)).to.equal(false);
         });
       });
@@ -53,7 +84,7 @@ describe("Token", () => {
 
     describe("» token id is out of the cap range", () => {
       it("it returns false", async () => {
-        expect(await this.token.canMint(this.cap.add(this.one))).to.equal(false);
+        expect(await this.token.canMint(501)).to.equal(false);
       });
     });
   });

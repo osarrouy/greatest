@@ -9,9 +9,14 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
     using Strings for uint256;
 
-    uint256 public constant cap = 3;
+    uint256 public constant cap = 500;
+    address public constant david = 0xcB46AAe3e534E98FEc550aE511bdeE78B9098687;
+    address public constant olivier = 0x8873b045d40A458e46E356a96279aE1820a898bA;
+    address public constant alex = 0x04A2437c0D2d1C5BA25D68D62b32E4318F96C448;
 
-    // address private constant _creator = 0x8873b045d40A458e46E356a96279aE1820a898bA;
+    constructor() {
+        _preMint();
+    }
 
     function mint(address to, uint256 tokenId) external {
         require(_msgSender() == owner(), "GSAT: must be owner to mint");
@@ -38,17 +43,35 @@ contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
         return "ipfs://QmUq5anWNehvnDoeLuJjLebhwjko1TcSjwLsF75eCtWoPh/";
     }
 
-    // function mint() external {
-    //     uint256 supply = totalSupply();
-    //     require(supply < 500, "Greatest: well tried, friend");
-    //     uint256 max = supply == 0 ? 250 : 500;
+    function _preMint() private {
+        uint256 tokenId;
 
-    //     for (uint256 i = supply + 1; i <= max; i++) {
-    //         _mint(_creator, i);
-    //     }
-    // }
+        for (tokenId = 0; tokenId < 70; tokenId++) {
+            _mint(david, tokenId);
+        }
 
-    // Moi : 0-69, 300-319
-    // Toi : 70-79, 100-109, 150-159, 200-219 (j'ai un peu plus espacé si ça te va)
-    // Alex : 115-119
+        for (tokenId = 300; tokenId < 320; tokenId++) {
+            _mint(david, tokenId);
+        }
+
+        for (tokenId = 70; tokenId < 80; tokenId++) {
+            _mint(olivier, tokenId);
+        }
+
+        for (tokenId = 100; tokenId < 110; tokenId++) {
+            _mint(olivier, tokenId);
+        }        
+
+        for (tokenId = 150; tokenId < 160; tokenId++) {
+            _mint(olivier, tokenId);
+        }
+
+        for (tokenId = 200; tokenId < 220; tokenId++) {
+            _mint(olivier, tokenId);
+        }
+
+        for (tokenId = 115; tokenId < 120; tokenId++) {
+            _mint(alex, tokenId);
+        }
+    }
 }
