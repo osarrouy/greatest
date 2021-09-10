@@ -60,7 +60,7 @@ contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
 
         for (tokenId = 100; tokenId < 110; tokenId++) {
             _mint(olivier, tokenId);
-        }        
+        }
 
         for (tokenId = 150; tokenId < 160; tokenId++) {
             _mint(olivier, tokenId);

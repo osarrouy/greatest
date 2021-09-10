@@ -48,7 +48,7 @@ contract GSATFactory is Context, Ownable, IFactoryERC721 {
         return string(abi.encodePacked(token.baseTokenURI(), _optionId.toString()));
     }
 
-    function mint(uint256 _optionId, address _toAddress) external override {
+    function mint(uint256 _optionId, address _toAddress) public override {
         address sender = _msgSender();
         address owner = owner();
 
@@ -56,5 +56,37 @@ contract GSATFactory is Context, Ownable, IFactoryERC721 {
         require(canMint(_optionId), "GSATFactory: unavailable token");
 
         token.mint(_toAddress, _optionId);
+    }
+
+    /** hacks required for the contract to work on OpenSea */
+
+    function transferFrom(
+        address _from,
+        address _to,
+        uint256 _tokenId
+    ) public {
+        mint(_tokenId, _to);
+    }
+
+    function isApprovedForAll(address _owner, address _operator) public view returns (bool) {
+        address owner = owner();
+
+        if (_owner == owner && _operator == _owner) {
+            return true;
+        }
+
+        if (_owner == owner && _operator == registry.proxies(_owner)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    function ownerOf(uint256 _tokenId) public view returns (address) {
+        try token.ownerOf(_tokenId) returns (address owner) {
+            return owner;
+        } catch {
+            return owner();
+        }
     }
 }

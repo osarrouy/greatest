@@ -5,6 +5,12 @@ const PROXY_REGISTRY = {
   mainnet: "0xa5409ec958c83c3f309868babaca7c86dcb077c1",
 };
 
+const transferOwnership = async (ctx) => {
+  const tx = await ctx.token.transferOwnership(ctx.factory.address);
+  await tx.wait();
+  console.log("Token ownership transferred to factory");
+};
+
 const deploy = {
   token: async (ctx) => {
     const Token = await ethers.getContractFactory("GSAT");
@@ -17,6 +23,8 @@ const deploy = {
     ctx.factory = await Factory.deploy(ctx.token.address, PROXY_REGISTRY.rinkeby);
     await ctx.factory.deployed();
     console.log(`Factory deployed at ${chalk.cyan(ctx.factory.address)}`);
+
+    await transferOwnership(ctx);
   },
 };
 
@@ -26,19 +34,9 @@ const mint = async (ctx, tokenId, to = "0x8873b045d40A458e46E356a96279aE1820a898
   console.log(`Minted token ${chalk.cyan("#" + tokenId)}`);
 };
 
-const transferOwnership = async (ctx) => {
-  const tx = await ctx.token.transferOwnership(ctx.factory.address);
-  await tx.wait();
-  console.log("Token ownership transferred to factory");
-};
-
 async function main() {
   await deploy.token(this);
-  // await deploy.factory(this);
-  await mint(this, 0);
-  await mint(this, 1);
-  await mint(this, 2);
-  // await transferOwnership(this);
+  await deploy.factory(this);
 }
 
 main()
