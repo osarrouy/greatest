@@ -13,40 +13,39 @@ contract GSATFactory is Context, Ownable, IFactoryERC721 {
 
     uint256 private constant NB_OF_TOKENS = 3;
 
-
-    GSAT public gsat;
+    GSAT public token;
     IProxyRegistry public registry;
 
-    constructor(GSAT _gsat, IProxyRegistry _registry) {
+    constructor(GSAT _token, IProxyRegistry _registry) {
         // we do not check addresses to save gas
-        gsat = _gsat;
+        token = _token;
         registry = _registry;
     }
 
     function name() public view override returns (string memory) {
-        return gsat.name();
+        return token.name();
     }
 
     function symbol() public view override returns (string memory) {
-        return gsat.symbol();
+        return token.symbol();
+    }
+
+    function numOptions() public view override returns (uint256) {
+        return token.cap();
     }
 
     function supportsFactoryInterface() public pure override returns (bool) {
         return true;
     }
 
-    function numOptions() public pure override returns (uint256) {
-        return NB_OF_TOKENS;
-    }
-
     function canMint(uint256 _optionId) public view override returns (bool) {
-        return gsat.canMint(_optionId);
+        return token.canMint(_optionId);
     }
 
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
-        require(tokenId < NB_OF_TOKENS, "GSATFactory: URI query for nonexistent token");
+    function tokenURI(uint256 _optionId) public view override returns (string memory) {
+        require(_optionId < token.cap(), "GSATFactory: URI query for nonexistent token");
 
-        string(abi.encodePacked("ipfs://QmVdg3r6i3Respr9SXZoP8iDJC95yhSXzwkWL2LfzbpzZx/", tokenId.toString()));
+        return string(abi.encodePacked(token.baseTokenURI(), _optionId.toString()));
     }
 
     function mint(uint256 _optionId, address _toAddress) external override {
@@ -56,15 +55,6 @@ contract GSATFactory is Context, Ownable, IFactoryERC721 {
         require(sender == registry.proxies(owner) || sender == owner, "GSATFactory: must be owner's proxy or owner to mint");
         require(canMint(_optionId), "GSATFactory: unavailable token");
 
-        gsat.mint(_toAddress, _optionId);
+        token.mint(_toAddress, _optionId);
     }
-    // function mint() external {
-    //     uint256 supply = totalSupply();
-    //     require(supply < 500, "Greatest: well tried, friend");
-    //     uint256 max = supply == 0 ? 250 : 500;
-
-    //     for (uint256 i = supply + 1; i <= max; i++) {
-    //         _mint(_creator, i);
-    //     }
-    // }
 }

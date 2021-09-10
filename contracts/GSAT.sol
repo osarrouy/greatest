@@ -9,15 +9,9 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
     using Strings for uint256;
 
-    uint256 private constant NB_OF_TOKENS = 3;
+    uint256 public constant cap = 3;
+
     // address private constant _creator = 0x8873b045d40A458e46E356a96279aE1820a898bA;
-
-
-    // function tokenURI(uint256 tokenId) public pure override(ERC721, IFactoryERC721) returns (string memory) {
-    //     require(tokenId < NB_OF_TOKENS, "ERC721Metadata: URI query for nonexistent token");
-
-    //     return string(abi.encodePacked(_baseURI(), tokenId.toString()));
-    // }
 
     function mint(address to, uint256 tokenId) external {
         require(_msgSender() == owner(), "GSAT: must be owner to mint");
@@ -26,7 +20,7 @@ contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
     }
 
     function canMint(uint256 tokenId) public view returns (bool) {
-        if (tokenId >= NB_OF_TOKENS) return false;
+        if (tokenId >= cap) return false;
         if (_exists(tokenId)) return false;
 
         return true;
@@ -41,7 +35,7 @@ contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
     }
 
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://QmVdg3r6i3Respr9SXZoP8iDJC95yhSXzwkWL2LfzbpzZx/";
+        return "ipfs://QmUq5anWNehvnDoeLuJjLebhwjko1TcSjwLsF75eCtWoPh/";
     }
 
     // function mint() external {
@@ -53,4 +47,8 @@ contract GSAT is Context, Ownable, ERC721("500GreatestSongs", "GSAT") {
     //         _mint(_creator, i);
     //     }
     // }
+
+    // Moi : 0-69, 300-319
+    // Toi : 70-79, 100-109, 150-159, 200-219 (j'ai un peu plus espacé si ça te va)
+    // Alex : 115-119
 }
