@@ -17,7 +17,7 @@ contract GSAT is Context, Ownable, ERC721Enumerable {
     uint256 public constant cap = 500;
     address public constant david = 0xcB46AAe3e534E98FEc550aE511bdeE78B9098687;
     address public constant olivier = 0x8873b045d40A458e46E356a96279aE1820a898bA;
-    address public constant alex = 0x04A2437c0D2d1C5BA25D68D62b32E4318F96C448;
+    address public constant alex = 0x9E889AF7167F7DcBBb5cDAfE947F1392b31b2357;
 
     IProxyRegistry public registry;
 
