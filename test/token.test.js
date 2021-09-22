@@ -1,4 +1,11 @@
 const { expect } = require("chai");
+const { holders, friends } = require("./lib");
+
+const Batch = {
+  Arkhe: 0,
+  Drop: 1,
+  Sale: 2,
+};
 
 describe.only("Token", () => {
   before(async () => {
@@ -7,11 +14,16 @@ describe.only("Token", () => {
     this.symbol = "GSAT";
     this.one = ethers.BigNumber.from("1");
     this.cap = ethers.BigNumber.from("500");
-    [this.owner, this.recipient, this.other] = await ethers.getSigners();
+    [this.owner, this.proxy, this.recipient, this.other] = await ethers.getSigners();
+    // deploy registry
+    const Registry = await ethers.getContractFactory("ProxyRegistry");
+    this.registry = await Registry.deploy(this.proxy.address);
+    await this.registry.deployed();
     // deploy token
     const Token = await ethers.getContractFactory("GSAT");
-    this.token = await Token.deploy();
+    this.token = await Token.deploy(this.registry.address);
     await this.token.deployed();
+
     this.david = await this.token.david();
     this.olivier = await this.token.olivier();
     this.alex = await this.token.alex();
@@ -30,64 +42,85 @@ describe.only("Token", () => {
       expect(await this.token.symbol()).to.equal(this.symbol);
     });
 
-    it("it pre-mints tokens [0 - 69] and [300 - 329] to David", async () => {
-      for (let i = 0; i < 70; i++) {
+    it("it pre-mints tokens [1 - 20] and [334 - 350] to David", async () => {
+      for (let i = 1; i <= 20; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.david);
       }
 
-      for (let i = 300; i < 330; i++) {
+      for (let i = 334; i < 350; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.david);
       }
     });
 
-    it("it pre-mints tokens [70 - 79], [100 - 109], [150 - 159] and [200 - 219] to Olivier", async () => {
-      for (let i = 70; i < 80; i++) {
+    it("it pre-mints tokens [71 - 80], [101 - 110], [151 - 160] and [201 - 220] to Olivier", async () => {
+      for (let i = 71; i <= 80; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.olivier);
       }
 
-      for (let i = 100; i < 110; i++) {
+      for (let i = 101; i <= 110; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.olivier);
       }
 
-      for (let i = 150; i < 160; i++) {
+      for (let i = 151; i <= 160; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.olivier);
       }
 
-      for (let i = 200; i < 220; i++) {
+      for (let i = 201; i <= 220; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.olivier);
       }
     });
 
-    it("it pre-mints tokens [115 - 119] to Alex", async () => {
-      for (let i = 115; i < 120; i++) {
+    it("it pre-mints tokens [116 - 120] to Alex", async () => {
+      for (let i = 116; i <= 120; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.alex);
       }
     });
   });
 
-  describe("# canMint", () => {
-    describe("» token id is within the cap range", () => {
-      describe("» and token has not been minted yet", () => {
-        it("it returns true", async () => {
-          expect(await this.token.canMint(80)).to.equal(true);
-          expect(await this.token.canMint(499)).to.equal(true);
-        });
+  describe("# premint", () => {
+    describe("» Drop", () => {
+      before(async () => {
+        this.tx = await this.token.mint(Batch.Drop);
+        this.receipt = await this.tx.wait();
       });
 
-      describe("» but token has already been minted", () => {
-        it("it returns false", async () => {
-          // already minted through the pre-mint
-          expect(await this.token.canMint(0)).to.equal(false);
-        });
+      it("it pre-mints tokens [21 - 70] to holders", async () => {
+        for (let i = 0; i < 50; i++) {
+          expect((await this.token.ownerOf(i + 21)).toLowerCase()).to.equal(holders[i].toLowerCase());
+        }
       });
-    });
 
-    describe("» token id is out of the cap range", () => {
-      it("it returns false", async () => {
-        expect(await this.token.canMint(501)).to.equal(false);
+      it("it pre-mints tokens [301 - 333] to friends", async () => {
+        for (let i = 0; i < 33; i++) {
+          expect((await this.token.ownerOf(i + 301)).toLowerCase()).to.equal(friends[i].toLowerCase());
+        }
       });
     });
   });
+
+  // describe("# canMint", () => {
+  //   describe("» token id is within the cap range", () => {
+  //     describe("» and token has not been minted yet", () => {
+  //       it("it returns true", async () => {
+  //         expect(await this.token.canMint(80)).to.equal(true);
+  //         expect(await this.token.canMint(499)).to.equal(true);
+  //       });
+  //     });
+
+  //     describe("» but token has already been minted", () => {
+  //       it("it returns false", async () => {
+  //         // already minted through the pre-mint
+  //         expect(await this.token.canMint(0)).to.equal(false);
+  //       });
+  //     });
+  //   });
+
+  //   describe("» token id is out of the cap range", () => {
+  //     it("it returns false", async () => {
+  //       expect(await this.token.canMint(501)).to.equal(false);
+  //     });
+  //   });
+  // });
 
   // describe("# tokenURI", () => {
   //   describe("» token id is within the [0 - 499] range", () => {

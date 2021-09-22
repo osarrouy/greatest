@@ -6,7 +6,8 @@
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
     "test:gas": "REPORT_GAS=true npx hardhat test",
-    "deploy": "npx hardhat run --network frame scripts/deploy.js"
+    "deploy": "npx hardhat run --network frame scripts/deploy.js",
+    "validate": "npx hardhat run scripts/validate.js"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.3.1"
@@ -19,6 +20,7 @@
     "chalk": "^4.1.2",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.6",
+    "got": "^11.8.2",
     "hardhat": "^2.6.4",
     "hardhat-gas-reporter": "^1.0.4",
     "prettier": "^2.4.0",
