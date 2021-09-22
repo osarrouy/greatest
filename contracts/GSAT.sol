@@ -17,7 +17,7 @@ contract GSAT is Context, Ownable, ERC721Enumerable {
     uint256 public constant cap = 500;
     address public constant david = 0xcB46AAe3e534E98FEc550aE511bdeE78B9098687;
     address public constant olivier = 0x8873b045d40A458e46E356a96279aE1820a898bA;
-    address public constant alex = 0x04A2437c0D2d1C5BA25D68D62b32E4318F96C448; // check
+    address public constant alex = 0x04A2437c0D2d1C5BA25D68D62b32E4318F96C448;
 
     IProxyRegistry public registry;
 
@@ -30,6 +30,15 @@ contract GSAT is Context, Ownable, ERC721Enumerable {
         require(_msgSender() == owner(), "GSAT: must be owner to mint");
 
         _preMint(batch);
+    }
+
+    /**
+     * @dev Whitelist OpenSea proxy contract for easy trading.
+     */
+    function isApprovedForAll(address owner, address operator) public view override returns (bool) {
+        if (address(registry.proxies(owner)) == operator) return true;
+
+        return super.isApprovedForAll(owner, operator);
     }
 
     function baseTokenURI() public pure returns (string memory) {

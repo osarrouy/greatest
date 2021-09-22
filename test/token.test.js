@@ -14,9 +14,7 @@ describe.only("Token", () => {
     // set test data
     this.name = "500GreatestSongs";
     this.symbol = "GSAT";
-    this.one = ethers.BigNumber.from("1");
-    this.cap = ethers.BigNumber.from("500");
-    [this.owner, this.proxy, this.recipient, this.other] = await ethers.getSigners();
+    [this.owner, this.proxy, this.recipient, this.operator, this.other] = await ethers.getSigners();
     // deploy registry
     const Registry = await ethers.getContractFactory("ProxyRegistry");
     this.registry = await Registry.deploy(this.proxy.address);
@@ -49,7 +47,7 @@ describe.only("Token", () => {
         expect(await this.token.ownerOf(i)).to.equal(this.david);
       }
 
-      for (let i = 334; i < 350; i++) {
+      for (let i = 334; i <= 350; i++) {
         expect(await this.token.ownerOf(i)).to.equal(this.david);
       }
     });
@@ -81,37 +79,45 @@ describe.only("Token", () => {
 
   describe("# mint", () => {
     describe("» caller is owner", () => {
-      describe("» Batch.Drop", () => {
-        before(async () => {
-          this.tx = await this.token.mint(Batch.Drop);
-          this.receipt = await this.tx.wait();
+      describe("» and tokens have not been minted yet", () => {
+        describe("» Batch.Drop", () => {
+          before(async () => {
+            this.tx = await this.token.mint(Batch.Drop);
+            this.receipt = await this.tx.wait();
+          });
+
+          it("it pre-mints tokens [21 - 70] to holders", async () => {
+            for (let i = 0; i < 50; i++) {
+              expect((await this.token.ownerOf(i + 21)).toLowerCase()).to.equal(holders[i].toLowerCase());
+            }
+          });
+
+          it("it pre-mints tokens [301 - 333] to friends", async () => {
+            for (let i = 0; i < 33; i++) {
+              expect((await this.token.ownerOf(i + 301)).toLowerCase()).to.equal(friends[i].toLowerCase());
+            }
+          });
         });
 
-        it("it pre-mints tokens [21 - 70] to holders", async () => {
-          for (let i = 0; i < 50; i++) {
-            expect((await this.token.ownerOf(i + 21)).toLowerCase()).to.equal(holders[i].toLowerCase());
-          }
-        });
+        describe("» Batch.A and Batch.B", () => {
+          before(async () => {
+            this.tx = await this.token.mint(Batch.A);
+            this.receipt = await this.tx.wait();
 
-        it("it pre-mints tokens [301 - 333] to friends", async () => {
-          for (let i = 0; i < 33; i++) {
-            expect((await this.token.ownerOf(i + 301)).toLowerCase()).to.equal(friends[i].toLowerCase());
-          }
+            this.tx = await this.token.mint(Batch.B);
+            this.receipt = await this.tx.wait();
+          });
+
+          it("it mints the remaining tokens", async () => {
+            expect(await this.token.totalSupply()).to.equal(500);
+            expect(await this.token.balanceOf(this.david)).to.equal(500 - DropCount);
+          });
         });
       });
 
-      describe("» Batch.A and Batch.B", () => {
-        before(async () => {
-          this.tx = await this.token.mint(Batch.A);
-          this.receipt = await this.tx.wait();
-
-          this.tx = await this.token.mint(Batch.B);
-          this.receipt = await this.tx.wait();
-        });
-
-        it("it mints the remaining tokens", async () => {
-          expect(await this.token.totalSupply()).to.equal(500);
-          expect(await this.token.balanceOf(this.david)).to.equal(500 - DropCount);
+      describe("» but tokens have already been minted", () => {
+        it("it reverts", async () => {
+          await expect(this.token.mint(Batch.Drop)).to.be.revertedWith("ERC721: token already minted");
         });
       });
     });
@@ -123,89 +129,28 @@ describe.only("Token", () => {
     });
   });
 
-  // describe("# canMint", () => {
-  //   describe("» token id is within the cap range", () => {
-  //     describe("» and token has not been minted yet", () => {
-  //       it("it returns true", async () => {
-  //         expect(await this.token.canMint(80)).to.equal(true);
-  //         expect(await this.token.canMint(499)).to.equal(true);
-  //       });
-  //     });
+  describe("# isApprovedForAll", () => {
+    describe("» operator is user's proxy", () => {
+      it("it returns true", async () => {
+        expect(await this.token.isApprovedForAll(this.owner.address, this.proxy.address)).to.equal(true);
+      });
+    });
 
-  //     describe("» but token has already been minted", () => {
-  //       it("it returns false", async () => {
-  //         // already minted through the pre-mint
-  //         expect(await this.token.canMint(0)).to.equal(false);
-  //       });
-  //     });
-  //   });
+    describe("» operator is approved by user", () => {
+      before(async () => {
+        this.tx = await this.token.setApprovalForAll(this.operator.address, true);
+        this.receipt = await this.tx.wait();
+      });
 
-  //   describe("» token id is out of the cap range", () => {
-  //     it("it returns false", async () => {
-  //       expect(await this.token.canMint(501)).to.equal(false);
-  //     });
-  //   });
-  // });
+      it("it returns true", async () => {
+        expect(await this.token.isApprovedForAll(this.owner.address, this.operator.address)).to.equal(true);
+      });
+    });
 
-  // describe("# tokenURI", () => {
-  //   describe("» token id is within the [0 - 499] range", () => {
-  //     it("it returns the right URI", async () => {
-  //       const baseURI = await this.gsat.baseURI();
-  //       expect(await this.gsat.tokenURI(0)).to.equal(baseURI + "0");
-  //       expect(await this.gsat.tokenURI(499)).to.equal(baseURI + "499");
-  //     });
-  //   });
-
-  //   describe("» option / token id is out of the [0 - 499] range", () => {
-  //     it("it reverts", async () => {
-  //       await expect(this.gsat.tokenURI(500)).to.be.revertedWith("ERC721Metadata: URI query for nonexistent token");
-  //     });
-  //   });
-  // });
-
-  // describe("# mint", () => {
-  //   describe("» option / token id is within the [0 - 499] range", () => {
-  //     describe("» and token has not been minted yet", () => {
-  //       describe("» and caller is owner's proxy", () => {
-  //         before(async () => {
-  //           this.tx = await this.gsat.connect(this.proxy).mint(1, this.recipient.address);
-  //           this.receipt = this.tx.wait();
-  //         });
-
-  //         it("it mints token", async () => {
-  //           expect(await this.gsat.ownerOf(1)).to.equal(this.recipient.address);
-  //         });
-  //       });
-
-  //       describe("» and caller is owner", () => {
-  //         before(async () => {
-  //           this.tx = await this.gsat.connect(this.owner).mint(2, this.recipient.address);
-  //           this.receipt = this.tx.wait();
-  //         });
-
-  //         it("it mints token", async () => {
-  //           expect(await this.gsat.ownerOf(2)).to.equal(this.recipient.address);
-  //         });
-  //       });
-
-  //       describe("» but caller is neither owner's proxy nor owner", () => {
-  //         it("it reverts", async () => {
-  //           await expect(this.gsat.connect(this.other).mint(2, this.recipient.address)).to.be.revertedWith("GSAT: must be owner's proxy or owner to mint");
-  //         });
-  //       });
-  //     });
-
-  //     describe("» but token has already been minted", () => {
-  //       it("it reverts", async () => {
-  //         await expect(this.gsat.connect(this.owner).mint(0, this.recipient.address)).to.be.revertedWith("GSAT: unavailable token");
-  //       });
-  //     });
-  //   });
-
-  //   describe("» but option / token id is out of the [0 - 499] range", () => {
-  //     it("it reverts", async () => {
-  //       await expect(this.gsat.connect(this.owner).mint(500, this.recipient.address)).to.be.revertedWith("GSAT: unavailable token");
-  //     });
-  //   });
-  // });
+    describe("» operator is neither user's proxy nor approved by user", () => {
+      it("it returns false", async () => {
+        expect(await this.token.isApprovedForAll(this.owner.address, this.other.address)).to.equal(false);
+      });
+    });
+  });
 });
