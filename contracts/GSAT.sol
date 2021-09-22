@@ -5,12 +5,13 @@ import "./interfaces/IProxyRegistry.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
-import "hardhat/console.sol";
-contract GSAT is Context, Ownable, ERC721Enumerable  {
+
+contract GSAT is Context, Ownable, ERC721Enumerable {
     enum Batch {
         Arkhe,
         Drop,
-        Sale
+        A,
+        B
     }
 
     uint256 public constant cap = 500;
@@ -165,25 +166,18 @@ contract GSAT is Context, Ownable, ERC721Enumerable  {
                 0x4AF4aEBe930e938FA11aD28cD2c88645cCe739A1,
                 0xDc5b961a5aB04ac38321c89100584fB965721931
             ];
-              console.log("Holders");
-            
+
             for (iterator = 0; iterator < 50; iterator++) {
-              console.log(iterator + 21);
                 _mint(holders[iterator], iterator + 21);
             }
 
-              console.log("Friends");
-
-
             for (iterator = 0; iterator < 33; iterator++) {
-              console.log(iterator + 301);
-
                 _mint(friends[iterator], iterator + 301);
             }
         }
 
-        if (batch == Batch.Sale) {
-            for (iterator = 91; iterator <= 100; iterator++) {
+        if (batch == Batch.A) {
+            for (iterator = 81; iterator <= 100; iterator++) {
                 _mint(david, iterator);
             }
 
@@ -202,8 +196,10 @@ contract GSAT is Context, Ownable, ERC721Enumerable  {
             for (iterator = 221; iterator <= 300; iterator++) {
                 _mint(david, iterator);
             }
+        }
 
-            for (iterator = 334; iterator <= 500; iterator++) {
+        if (batch == Batch.B) {
+            for (iterator = 351; iterator <= 500; iterator++) {
                 _mint(david, iterator);
             }
         }

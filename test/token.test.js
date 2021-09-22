@@ -1,10 +1,12 @@
 const { expect } = require("chai");
 const { holders, friends } = require("./lib");
+const DropCount = 50 + 5 + 50 + 33;
 
 const Batch = {
   Arkhe: 0,
   Drop: 1,
-  Sale: 2,
+  A: 2,
+  B: 3,
 };
 
 describe.only("Token", () => {
@@ -77,23 +79,46 @@ describe.only("Token", () => {
     });
   });
 
-  describe("# premint", () => {
-    describe("» Drop", () => {
-      before(async () => {
-        this.tx = await this.token.mint(Batch.Drop);
-        this.receipt = await this.tx.wait();
+  describe("# mint", () => {
+    describe("» caller is owner", () => {
+      describe("» Batch.Drop", () => {
+        before(async () => {
+          this.tx = await this.token.mint(Batch.Drop);
+          this.receipt = await this.tx.wait();
+        });
+
+        it("it pre-mints tokens [21 - 70] to holders", async () => {
+          for (let i = 0; i < 50; i++) {
+            expect((await this.token.ownerOf(i + 21)).toLowerCase()).to.equal(holders[i].toLowerCase());
+          }
+        });
+
+        it("it pre-mints tokens [301 - 333] to friends", async () => {
+          for (let i = 0; i < 33; i++) {
+            expect((await this.token.ownerOf(i + 301)).toLowerCase()).to.equal(friends[i].toLowerCase());
+          }
+        });
       });
 
-      it("it pre-mints tokens [21 - 70] to holders", async () => {
-        for (let i = 0; i < 50; i++) {
-          expect((await this.token.ownerOf(i + 21)).toLowerCase()).to.equal(holders[i].toLowerCase());
-        }
-      });
+      describe("» Batch.A and Batch.B", () => {
+        before(async () => {
+          this.tx = await this.token.mint(Batch.A);
+          this.receipt = await this.tx.wait();
 
-      it("it pre-mints tokens [301 - 333] to friends", async () => {
-        for (let i = 0; i < 33; i++) {
-          expect((await this.token.ownerOf(i + 301)).toLowerCase()).to.equal(friends[i].toLowerCase());
-        }
+          this.tx = await this.token.mint(Batch.B);
+          this.receipt = await this.tx.wait();
+        });
+
+        it("it mints the remaining tokens", async () => {
+          expect(await this.token.totalSupply()).to.equal(500);
+          expect(await this.token.balanceOf(this.david)).to.equal(500 - DropCount);
+        });
+      });
+    });
+
+    describe("» caller is not owner", () => {
+      it("it reverts", async () => {
+        await expect(this.token.connect(this.other).mint(Batch.Drop)).to.be.revertedWith("GSAT: must be owner to mint");
       });
     });
   });
