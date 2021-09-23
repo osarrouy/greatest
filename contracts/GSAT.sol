@@ -50,7 +50,7 @@ contract GSAT is Context, Ownable, ERC721Enumerable {
     }
 
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://QmVomqCgpD5bTxxeRufsZGj8Pn6MojqvLazDKJNKe3Knkq/";
+        return "ipfs://Qmc9EcpEd3eXDvHbE83LtYXBdadRu6wk3EmdcybFufHPVt/";
     }
 
     function _preMint(Batch batch) private {

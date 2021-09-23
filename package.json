@@ -6,7 +6,8 @@
     "compile": "npx hardhat compile",
     "test": "npx hardhat test",
     "test:gas": "REPORT_GAS=true npx hardhat test",
-    "deploy": "npx hardhat run --network frame scripts/deploy.js",
+    "deploy:rinkeby": "NETWORK=Rinkeby npx hardhat run --network frame scripts/deploy.js",
+    "sell:rinkeby": "NETWORK=Rinkeby npx hardhat run --network frame scripts/sell.js",
     "validate": "npx hardhat run scripts/validate.js"
   },
   "dependencies": {

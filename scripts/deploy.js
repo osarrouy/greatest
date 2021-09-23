@@ -15,7 +15,7 @@ const PROXY_REGISTRY = {
 const deploy = {
   token: async (ctx) => {
     const Token = await ethers.getContractFactory("GSAT");
-    ctx.token = await Token.deploy(PROXY_REGISTRY.rinkeby);
+    ctx.token = await Token.deploy(process.env.NETWORK === "Rinkeby" ? PROXY_REGISTRY.rinkeby : PROXY_REGISTRY.mainnet);
     await ctx.token.deployed();
     console.log(`Token deployed at ${chalk.cyan(ctx.token.address)} and arkhe batch minted`);
     await (await ctx.token.mint(Batch.Drop)).wait();
